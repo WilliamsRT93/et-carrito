@@ -61,5 +61,6 @@ docker run -p 5000:5000 -e DB_HOST=... -e DB_PASSWORD=... ev3-back
 
 ## CI/CD
 
-`.github/workflows/deploy.yml` construye la imagen, la publica en Amazon ECR y fuerza un nuevo
-despliegue del servicio ECS en cada push a `main`.
+`.github/workflows/deploy.yml` (en la raíz del monorepo) usa `dorny/paths-filter` para construir
+y desplegar este componente únicamente cuando cambian archivos dentro de `backend/`. Publica la
+imagen en Amazon ECR y fuerza un nuevo despliegue del servicio `ev3-svc-back` en ECS.
