@@ -46,6 +46,18 @@ router.get("/health", asyncRoute(async (_req, res) => {
   res.json({ status: "ok", db: true });
 }));
 
+// Endpoint temporal para la prueba de carga del autoscaling (IE3): genera trabajo
+// real de CPU (hashing) para poder demostrar el Target Tracking sin depender del
+// throughput de red del cliente de pruebas. Se retira despues de la demostracion.
+const crypto = require("crypto");
+router.get("/stress", (_req, res) => {
+  let data = "ev3-carga-" + Date.now();
+  for (let i = 0; i < 200000; i++) {
+    data = crypto.createHash("sha256").update(data).digest("hex");
+  }
+  res.json({ ok: true, hash: data.slice(0, 16) });
+});
+
 // ---------- Productos (CRUD completo) ----------
 
 router.get("/productos", asyncRoute(async (_req, res) => {
