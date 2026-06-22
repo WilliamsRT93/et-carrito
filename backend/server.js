@@ -49,11 +49,20 @@ router.get("/health", asyncRoute(async (_req, res) => {
 // Endpoint temporal para la prueba de carga del autoscaling (IE3): genera trabajo
 // real de CPU (hashing) para poder demostrar el Target Tracking sin depender del
 // throughput de red del cliente de pruebas. Se retira despues de la demostracion.
+// El trabajo se hace en lotes con setImmediate para CEDER el event loop entre
+// lotes: si se hace todo de forma sincrona, /health queda bloqueado detras del
+// computo y el ALB marca la tarea "unhealthy" (la reemplaza) en vez de escalarla.
 const crypto = require("crypto");
-router.get("/stress", (_req, res) => {
+function yieldLoop() {
+  return new Promise((resolve) => setImmediate(resolve));
+}
+router.get("/stress", async (_req, res) => {
   let data = "ev3-carga-" + Date.now();
-  for (let i = 0; i < 200000; i++) {
-    data = crypto.createHash("sha256").update(data).digest("hex");
+  for (let batch = 0; batch < 200; batch++) {
+    for (let i = 0; i < 1000; i++) {
+      data = crypto.createHash("sha256").update(data).digest("hex");
+    }
+    await yieldLoop();
   }
   res.json({ ok: true, hash: data.slice(0, 16) });
 });
