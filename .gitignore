@@ -1,0 +1,14 @@
+node_modules/
+.env
+
+# Infraestructura: nunca subir credenciales ni IDs de la sesion AWS Academy
+infra/secrets.env
+infra/ids.env
+infra/ids.env.tmp
+infra/user-data-db.sh
+infra/logs/
+ecs/task-def-back.json
+ecs/task-def-front.json
+
+# Bitacora de trabajo: uso exclusivamente local
+bitacora.md

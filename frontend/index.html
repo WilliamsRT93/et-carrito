@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Innovatech Chile — Carrito de Compra/Venta/Despacho</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Innovatech Chile</h1>
+    <p>Carrito de compra · venta · despacho</p>
+  </header>
+
+  <main>
+    <section id="catalogo">
+      <h2>Catálogo de productos</h2>
+      <form id="form-producto">
+        <input type="hidden" id="producto-id">
+        <input type="text" id="producto-nombre" placeholder="Nombre" required>
+        <input type="text" id="producto-descripcion" placeholder="Descripción">
+        <input type="number" id="producto-precio" placeholder="Precio" min="0" step="1" required>
+        <input type="number" id="producto-stock" placeholder="Stock" min="0" step="1" required>
+        <button type="submit" id="btn-guardar-producto">Agregar producto</button>
+        <button type="button" id="btn-cancelar-edicion" hidden>Cancelar edición</button>
+      </form>
+      <table id="tabla-productos">
+        <thead>
+          <tr><th>ID</th><th>Nombre</th><th>Descripción</th><th>Precio</th><th>Stock</th><th>Acciones</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section id="carrito">
+      <h2>Carrito de compra</h2>
+      <div id="items-carrito"></div>
+      <p>Total: $<span id="carrito-total">0</span></p>
+      <form id="form-venta">
+        <input type="text" id="venta-cliente" placeholder="Nombre del cliente" required>
+        <input type="text" id="venta-direccion" placeholder="Dirección de despacho" required>
+        <button type="submit">Confirmar venta y generar despacho</button>
+      </form>
+    </section>
+
+    <section id="despachos">
+      <h2>Despachos</h2>
+      <table id="tabla-despachos">
+        <thead>
+          <tr><th>ID</th><th>Cliente</th><th>Dirección</th><th>Total</th><th>Estado</th><th>Acciones</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer>
+    <p id="estado-backend">Backend: verificando...</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
