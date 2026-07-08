@@ -1,0 +1,59 @@
+name: et-carrito
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: et-db-local
+    environment:
+      POSTGRES_DB: ${DB_NAME:-innovatech}
+      POSTGRES_USER: ${DB_USER:-appuser}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-change-me-local}
+    volumes:
+      - et-db-data:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - et-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-appuser} -d ${DB_NAME:-innovatech}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    container_name: et-back-local
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-innovatech}
+      DB_USER: ${DB_USER:-appuser}
+      DB_PASSWORD: ${DB_PASSWORD:-change-me-local}
+      PORT: 5000
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - et-net
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:5000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  frontend:
+    build: ./frontend
+    container_name: et-front-local
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    networks:
+      - et-net
+
+networks:
+  et-net:
+    driver: bridge
+
+volumes:
+  et-db-data:
+    name: et-db-data

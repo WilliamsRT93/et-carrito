@@ -38,6 +38,20 @@ ecs/        Plantillas de task definition de ECS
   `aws secretsmanager get-secret-value`, usando el rol de instancia (`LabInstanceProfile`). Las
   credenciales de AWS y el token de sesión para el pipeline se gestionan como **GitHub Secrets**.
 
+## Desarrollo local con Docker Compose
+
+```bash
+cp .env.example .env   # ajustar DB_PASSWORD si se desea
+docker compose up -d --build
+```
+
+Levanta los 3 servicios (`db`, `backend`, `frontend`) en la red `et-net`, con el volumen nombrado
+`et-db-data` para persistir los datos de PostgreSQL entre reinicios. El frontend queda disponible
+en `http://localhost:8080`; su nginx hace `proxy_pass` de `/api/` hacia el contenedor `backend`
+(en AWS esa ruta la resuelve el ALB, sin pasar por nginx). Ambos Dockerfiles usan imágenes base
+`alpine` minimalistas; el del backend es **multietapa** (una etapa instala dependencias con
+`npm ci`, la etapa final solo copia `node_modules` y el código, sin herramientas de build).
+
 ## Cómo desplegar desde cero
 
 ```bash
