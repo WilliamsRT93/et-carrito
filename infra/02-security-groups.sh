@@ -40,7 +40,9 @@ aws ec2 authorize-security-group-ingress --group-id "$SG_ALB" --protocol tcp --p
   && echo "  + regla: $SG_ALB <- 80 desde 0.0.0.0/0" || echo "  = ya existia: $SG_ALB <- 80 desde 0.0.0.0/0"
 
 add_rule "$SG_FRONT" 80 "$SG_ALB" "ALB -> Front"
-add_rule "$SG_BACK" 5000 "$SG_FRONT" "Front -> Back"
+# El ALB enruta /api/* directamente al target group del backend (sin Cloud Map/Service
+# Connect), por lo que quien conecta al puerto 5000 es el ALB, no el frontend.
+add_rule "$SG_BACK" 5000 "$SG_ALB" "ALB -> Back (regla de listener /api/*)"
 add_rule "$SG_DB" 5432 "$SG_BACK" "Back -> BD"
 
 grep -v "^export SG_" ./ids.env > ./ids.env.tmp || true

@@ -1,9 +1,12 @@
 #!/bin/bash
-# Genera infra/user-data-db.sh (texto plano) embebiendo db/init.sql.
+# Genera infra/user-data-db.sh embebiendo db/init.sql.
+# La contraseña de la BD NO se embebe en texto plano: el user-data la obtiene
+# en el arranque desde AWS Secrets Manager (secreto "ev3-db-password"), usando
+# el rol de la instancia (LabInstanceProfile). Requiere haber creado el secreto
+# antes con: aws secretsmanager create-secret --name ev3-db-password ...
 set -euo pipefail
 cd "$(dirname "$0")"
 source ./00-params.env
-source ./secrets.env
 
 OUT="./user-data-db.sh"
 
@@ -14,6 +17,10 @@ OUT="./user-data-db.sh"
   echo ""
   echo "dnf update -y"
   echo "dnf install -y postgresql15-server postgresql15"
+  echo ""
+  echo "# Contrasena obtenida en tiempo de arranque desde AWS Secrets Manager (no viaja en texto plano)"
+  echo "DB_PASSWORD=\$(aws secretsmanager get-secret-value --secret-id ev3-db-password --region ${AWS_REGION} --query SecretString --output text | sed -n 's/.*\"password\":\"\\([^\"]*\\)\".*/\\1/p')"
+  echo ""
   echo "/usr/bin/postgresql-setup --initdb"
   echo "systemctl enable postgresql"
   echo "systemctl start postgresql"
@@ -25,7 +32,7 @@ OUT="./user-data-db.sh"
   echo "sed -i 's/ident/scram-sha-256/g' /var/lib/pgsql/data/pg_hba.conf"
   echo "systemctl restart postgresql"
   echo ""
-  echo "sudo -u postgres psql -c \"CREATE USER ${DB_USER} WITH PASSWORD '${DB_PASSWORD}';\""
+  echo "sudo -u postgres psql -c \"CREATE USER ${DB_USER} WITH PASSWORD '\$DB_PASSWORD';\""
   echo "sudo -u postgres psql -c \"CREATE DATABASE ${DB_NAME} OWNER ${DB_USER};\""
   echo "sudo -u postgres psql -d ${DB_NAME} -c \"ALTER SCHEMA public OWNER TO ${DB_USER};\""
   echo ""
@@ -33,10 +40,11 @@ OUT="./user-data-db.sh"
   cat ../db/init.sql
   echo "SQLEOF"
   echo ""
-  echo "PGPASSWORD='${DB_PASSWORD}' psql -h 127.0.0.1 -U ${DB_USER} -d ${DB_NAME} -f /tmp/init.sql"
+  echo "PGPASSWORD=\"\$DB_PASSWORD\" psql -h 127.0.0.1 -U ${DB_USER} -d ${DB_NAME} -f /tmp/init.sql"
   echo "rm -f /tmp/init.sql"
+  echo "unset DB_PASSWORD"
   echo "touch /tmp/ev3-userdata-done"
 } > "$OUT"
 
 chmod 600 "$OUT"
-echo "Generado $OUT ($(wc -l < "$OUT") lineas, contiene credenciales: permisos 600)"
+echo "Generado $OUT ($(wc -l < "$OUT") lineas). Sin credenciales embebidas: la password se obtiene de Secrets Manager en el arranque."

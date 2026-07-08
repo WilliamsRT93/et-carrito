@@ -59,10 +59,17 @@ router.get("/productos/:id", asyncRoute(async (req, res) => {
   res.json(rows[0]);
 }));
 
+function validarProducto({ nombre, precio }) {
+  if (!nombre || precio == null) return "nombre y precio son obligatorios";
+  if (Number(precio) < 0) return "precio no puede ser negativo";
+  return null;
+}
+
 router.post("/productos", asyncRoute(async (req, res) => {
   const { nombre, descripcion, precio, stock } = req.body;
-  if (!nombre || precio == null) {
-    return res.status(400).json({ error: "nombre y precio son obligatorios" });
+  const errorValidacion = validarProducto({ nombre, precio });
+  if (errorValidacion) {
+    return res.status(400).json({ error: errorValidacion });
   }
   const { rows } = await pool.query(
     "INSERT INTO productos (nombre, descripcion, precio, stock) VALUES ($1, $2, $3, $4) RETURNING *",
@@ -190,4 +197,8 @@ router.delete("/despachos/:id", asyncRoute(async (req, res) => {
 app.use("/", router);
 app.use("/api", router);
 
-app.listen(PORT, () => console.log(`ev3-back escuchando en puerto ${PORT}`));
+if (require.main === module) {
+  app.listen(PORT, () => console.log(`ev3-back escuchando en puerto ${PORT}`));
+}
+
+module.exports = { validarProducto };
