@@ -24,7 +24,6 @@ if [ "$INSTANCE_ID" == "None" ] || [ -z "$INSTANCE_ID" ]; then
     --subnet-id "$SUBNET_PRIV_1A" \
     --security-group-ids "$SG_DB" \
     --iam-instance-profile Name=LabInstanceProfile \
-    --associate-public-ip-address \
     --user-data file://user-data-db.sh \
     --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=${PROJECT}-db}]" \
     --query "Instances[0].InstanceId" --output text)
