@@ -7,7 +7,7 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  ECS_CLUSTER: ev3-cluster
+  ECS_CLUSTER: et-cluster
 
 jobs:
   changes:
@@ -29,8 +29,8 @@ jobs:
     if: needs.changes.outputs.backend == 'true'
     runs-on: ubuntu-latest
     env:
-      ECR_REPOSITORY: ev3-back
-      ECS_SERVICE: ev3-svc-back
+      ECR_REPOSITORY: et-back
+      ECS_SERVICE: et-svc-back
     steps:
       - uses: actions/checkout@v4
 
@@ -80,8 +80,8 @@ jobs:
     if: needs.changes.outputs.frontend == 'true'
     runs-on: ubuntu-latest
     env:
-      ECR_REPOSITORY: ev3-front
-      ECS_SERVICE: ev3-svc-front
+      ECR_REPOSITORY: et-front
+      ECS_SERVICE: et-svc-front
     steps:
       - uses: actions/checkout@v4
 

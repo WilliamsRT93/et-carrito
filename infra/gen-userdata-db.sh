@@ -1,9 +1,9 @@
 #!/bin/bash
 # Genera infra/user-data-db.sh embebiendo db/init.sql.
 # La contraseña de la BD NO se embebe en texto plano: el user-data la obtiene
-# en el arranque desde AWS Secrets Manager (secreto "ev3-db-password"), usando
+# en el arranque desde AWS Secrets Manager (secreto "et-db-password"), usando
 # el rol de la instancia (LabInstanceProfile). Requiere haber creado el secreto
-# antes con: aws secretsmanager create-secret --name ev3-db-password ...
+# antes con: aws secretsmanager create-secret --name et-db-password ...
 set -euo pipefail
 cd "$(dirname "$0")"
 source ./00-params.env
@@ -19,7 +19,7 @@ OUT="./user-data-db.sh"
   echo "dnf install -y postgresql15-server postgresql15"
   echo ""
   echo "# Contrasena obtenida en tiempo de arranque desde AWS Secrets Manager (no viaja en texto plano)"
-  echo "DB_PASSWORD=\$(aws secretsmanager get-secret-value --secret-id ev3-db-password --region ${AWS_REGION} --query SecretString --output text | sed -n 's/.*\"password\":\"\\([^\"]*\\)\".*/\\1/p')"
+  echo "DB_PASSWORD=\$(aws secretsmanager get-secret-value --secret-id et-db-password --region ${AWS_REGION} --query SecretString --output text | sed -n 's/.*\"password\":\"\\([^\"]*\\)\".*/\\1/p')"
   echo ""
   echo "/usr/bin/postgresql-setup --initdb"
   echo "systemctl enable postgresql"

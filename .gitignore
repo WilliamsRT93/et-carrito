@@ -5,6 +5,7 @@ node_modules/
 infra/secrets.env
 infra/ids.env
 infra/ids.env.tmp
+infra/ids.env.bak_*
 infra/user-data-db.sh
 infra/logs/
 ecs/task-def-back.json
