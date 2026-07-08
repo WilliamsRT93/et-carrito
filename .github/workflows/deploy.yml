@@ -1,4 +1,4 @@
-name: CI/CD Innovatech Chile - EP3 (ECS Fargate)
+name: CI/CD Innovatech Chile - EFT (ECS Fargate)
 
 on:
   push:

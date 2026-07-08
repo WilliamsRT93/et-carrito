@@ -1,5 +1,5 @@
 #!/bin/bash
-# Servicios ECS Fargate: ev3-svc-front (detras del ALB) y ev3-svc-back (interno via Service Connect).
+# Servicios ECS Fargate: ${PROJECT}-svc-front (detras del ALB) y ${PROJECT}-svc-back (interno via Service Connect).
 set -euo pipefail
 cd "$(dirname "$0")"
 source ./00-params.env
@@ -20,7 +20,7 @@ if [ "$BACK_EXISTS" == "0" ]; then
     --load-balancers "targetGroupArn=$TG_BACK_ARN,containerName=${PROJECT}-back,containerPort=5000" \
     --query "service.serviceArn" --output text
 else
-  echo "ev3-svc-back ya existe"
+  echo "${PROJECT}-svc-back ya existe"
 fi
 
 echo "== Servicio frontend (publico via ALB) =="
@@ -38,7 +38,7 @@ if [ "$FRONT_EXISTS" == "0" ]; then
     --load-balancers "targetGroupArn=$TG_FRONT_ARN,containerName=${PROJECT}-front,containerPort=80" \
     --query "service.serviceArn" --output text
 else
-  echo "ev3-svc-front ya existe"
+  echo "${PROJECT}-svc-front ya existe"
 fi
 
 echo "== Esperando estabilidad de los servicios (puede tardar 1-3 min) =="

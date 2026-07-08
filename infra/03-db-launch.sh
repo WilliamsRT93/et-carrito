@@ -1,5 +1,5 @@
 #!/bin/bash
-# Lanza ev3-db en la subred privada. Abre una ventana de internet UNA SOLA VEZ
+# Lanza et-db en la subred privada. Abre una ventana de internet UNA SOLA VEZ
 # (EIP temporal + ruta temporal a IGW) para que el user-data actualice Linux
 # e instale PostgreSQL. Al terminar, cierra la ventana de forma permanente.
 set -euo pipefail

@@ -1,6 +1,6 @@
 #!/bin/bash
 # VPC Interface Endpoints (PrivateLink) para SSM Session Manager.
-# Permite administrar ev3-db (consola EC2 por navegador) SIN salida a internet,
+# Permite administrar et-db (consola EC2 por navegador) SIN salida a internet,
 # manteniendo el aislamiento permanente de la subred privada.
 set -euo pipefail
 cd "$(dirname "$0")"

@@ -21,7 +21,7 @@ echo "CLUSTER=${PROJECT}-cluster"
 # se resuelve con reglas de listener del ALB por path ("/api/*" -> target group back),
 # metodo explicitamente admitido por la rubrica ("DNS interno, servicios o ALB").
 
-echo "== Task definition: ev3-back =="
+echo "== Task definition: ${PROJECT}-back =="
 cat > ../ecs/task-def-back.json <<EOF
 {
   "family": "${PROJECT}-back",
@@ -60,7 +60,7 @@ cat > ../ecs/task-def-back.json <<EOF
 EOF
 aws ecs register-task-definition --cli-input-json file://../ecs/task-def-back.json --query "taskDefinition.taskDefinitionArn" --output text
 
-echo "== Task definition: ev3-front =="
+echo "== Task definition: ${PROJECT}-front =="
 cat > ../ecs/task-def-front.json <<EOF
 {
   "family": "${PROJECT}-front",
