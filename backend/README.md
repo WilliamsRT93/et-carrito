@@ -1,6 +1,6 @@
-# ev3-back
+# et-back
 
-Backend del carrito de compra/venta/despacho de Innovatech Chile (Evaluación Parcial N°3,
+Backend del carrito de compra/venta/despacho de Innovatech Chile (Evaluación Final Transversal,
 ISY1101 — Introducción a Herramientas DevOps).
 
 API REST en Node.js + Express + PostgreSQL. Se ejecuta como tarea de **Amazon ECS Fargate**,
@@ -8,11 +8,11 @@ detrás de un Application Load Balancer (ALB) que enruta el tráfico `/api/*` ha
 
 ## Arquitectura
 
-- Clúster: `ev3-cluster` (ECS Fargate, sin gestión de nodos).
-- Servicio: `ev3-svc-back`, autoscaling Target Tracking (CPU 50%, min 1 / max 4 tareas).
-- Expuesto internamente vía ALB (`ev3-alb`) con regla de path `/api/*` → target group `ev3-tg-back`.
+- Clúster: `et-cluster` (ECS Fargate, sin gestión de nodos).
+- Servicio: `et-svc-back`, autoscaling Target Tracking (CPU 50%, min 1 / max 4 tareas).
+- Expuesto internamente vía ALB (`et-alb`) con regla de path `/api/*` → target group `et-tg-back`.
 - Base de datos: PostgreSQL en una instancia EC2 **sin acceso a internet** (subred privada),
-  alcanzable solo desde el Security Group del backend (`ev3-back-sg`).
+  alcanzable solo desde el Security Group del backend (`et-back-sg`).
 
 ## Endpoints
 
@@ -55,12 +55,12 @@ DB_HOST=localhost DB_USER=appuser DB_PASSWORD=*** DB_NAME=innovatech node server
 O con Docker:
 
 ```bash
-docker build -t ev3-back .
-docker run -p 5000:5000 -e DB_HOST=... -e DB_PASSWORD=... ev3-back
+docker build -t et-back .
+docker run -p 5000:5000 -e DB_HOST=... -e DB_PASSWORD=... et-back
 ```
 
 ## CI/CD
 
 `.github/workflows/deploy.yml` (en la raíz del monorepo) usa `dorny/paths-filter` para construir
 y desplegar este componente únicamente cuando cambian archivos dentro de `backend/`. Publica la
-imagen en Amazon ECR y fuerza un nuevo despliegue del servicio `ev3-svc-back` en ECS.
+imagen en Amazon ECR y fuerza un nuevo despliegue del servicio `et-svc-back` en ECS.

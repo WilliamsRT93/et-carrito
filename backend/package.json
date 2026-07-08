@@ -1,5 +1,5 @@
 {
-  "name": "ev3-back",
+  "name": "et-back",
   "version": "1.0.0",
   "description": "Backend del carrito de compra/venta/despacho - Innovatech Chile",
   "main": "server.js",

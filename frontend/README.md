@@ -1,6 +1,6 @@
-# ev3-front
+# et-front
 
-Frontend del carrito de compra/venta/despacho de Innovatech Chile (Evaluación Parcial N°3,
+Frontend del carrito de compra/venta/despacho de Innovatech Chile (Evaluación Final Transversal,
 ISY1101 — Introducción a Herramientas DevOps).
 
 Interfaz estática (HTML + CSS + JavaScript vanilla) servida por **nginx**, ejecutada como tarea
@@ -8,11 +8,11 @@ de **Amazon ECS Fargate** detrás de un Application Load Balancer (ALB) con acce
 
 ## Arquitectura
 
-- Clúster: `ev3-cluster` (ECS Fargate).
-- Servicio: `ev3-svc-front`, autoscaling Target Tracking (CPU 50%, min 1 / max 4 tareas).
-- Acceso público vía ALB (`ev3-alb`), puerto 80.
+- Clúster: `et-cluster` (ECS Fargate).
+- Servicio: `et-svc-front`, autoscaling Target Tracking (CPU 50%, min 1 / max 4 tareas).
+- Acceso público vía ALB (`et-alb`), puerto 80.
 - Las llamadas a la API se hacen a `/api/...` (mismo origen): el ALB enruta ese path
-  directamente al backend (`ev3-svc-back`), por lo que no se requiere CORS ni conocer la IP
+  directamente al backend (`et-svc-back`), por lo que no se requiere CORS ni conocer la IP
   del backend desde el navegador.
 
 ## Funcionalidad
@@ -25,8 +25,8 @@ de **Amazon ECS Fargate** detrás de un Application Load Balancer (ALB) con acce
 ## Ejecutar localmente
 
 ```bash
-docker build -t ev3-front .
-docker run -p 8080:80 ev3-front
+docker build -t et-front .
+docker run -p 8080:80 et-front
 ```
 
 Para probar contra un backend real, usar `docker-compose` o ajustar `default.conf` con la URL
